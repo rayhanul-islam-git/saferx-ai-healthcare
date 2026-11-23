@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SafeRx AI — Intelligent Healthcare &amp; Clinical Prescription Safety</title>
+  <meta name="description" content="SafeRx AI: Clinical multi-drug interaction checker, patient allergy &amp; renal safety engine, Cockcroft-Gault CrCl dosage calculator, Cloud Firestore audit ledger, and ICT 4458 SQA test suite." />
+
+  <!-- Custom SVG Favicon: SafeRx AI Crystal Shield + Rx Cross -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23059669'/%3E%3Cstop offset='100%25' stop-color='%230284C7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M32 4L10 13v17c0 14.5 9.4 27.6 22 31 12.6-3.4 22-16.5 22-31V13L32 4z' fill='url(%23g)'/%3E%3Cpath d='M32 9L14.5 16.2v13.8c0 11.8 7.5 22.5 17.5 25.5 10-3 17.5-13.7 17.5-25.5V16.2L32 9z' fill='rgba(255,255,255,0.18)'/%3E%3Cpath d='M29 19h6v9h9v6h-9v9h-6v-9h-9v-6h9v-9z' fill='%23ffffff'/%3E%3C/svg%3E" />
+
+  <!-- Google Fonts: Bricolage Grotesque + DM Sans + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Skip Link for Accessibility -->
+  <a href="#main-content" class="skip-link">Skip to clinical workspace</a>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header glass-nav" role="banner">
+    <div class="container header-inner">
+      <a href="#hero" class="brand" aria-label="SafeRx AI Home">
+        <span class="brand-logo" aria-hidden="true">
+          <svg viewBox="0 0 48 48" width="40" height="40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="shieldGrad" x1="6" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#059669" />
+                <stop offset="55%" stop-color="#10B981" />
+                <stop offset="100%" stop-color="#0284C7" />
+              </linearGradient>
+              <linearGradient id="crystalHighlight" x1="12" y1="6" x2="36" y2="30" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.65" />
+                <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.05" />
+              </linearGradient>
+            </defs>
+            <path d="M24 3L7 10V23.2C7 34.1 14.2 43.4 24 46C33.8 43.4 41 34.1 41 23.2V10L24 3Z" fill="url(#shieldGrad)" />
+            <path d="M24 6.5L10.5 12.1V23C10.5 31.8 16.2 39.5 24 42C31.8 39.5 37.5 31.8 37.5 23V12.1L24 6.5Z" fill="url(#crystalHighlight)" stroke="rgba(255,255,255,0.45)" stroke-width="1" />
+            <!-- Medical Cross + Rx Crystal Accent -->
+            <rect x="21.5" y="13.5" width="5" height="17" rx="1.5" fill="#FFFFFF" />
+            <rect x="15.5" y="19.5" width="17" height="5" rx="1.5" fill="#FFFFFF" />
+            <circle cx="33.5" cy="33" r="4.5" fill="#0B1F1E" fill-opacity="0.82" stroke="#FFFFFF" stroke-width="1.4" />
+            <text x="33.5" y="34.8" text-anchor="middle" fill="#FFFFFF" font-family="JetBrains Mono, monospace" font-size="5.2" font-weight="700">Rx</text>
+          </svg>
+        </span>
+        <span class="brand-text">
+          <span class="brand-name">SafeRx AI</span>
+          <span class="brand-sub">Clinical Safety &amp; SQA Platform</span>
+        </span>
+      </a>
+
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="#safety-engine" class="nav-link">Rx Checker</a>
+        <a href="#dosage-lab" class="nav-link">Dosage &amp; CrCl</a>
+        <a href="#audit-ledger" class="nav-link">Audit Ledger</a>
+        <a href="#sqa-lab" class="nav-link">SQA Suite</a>
+      </nav>
+
+      <div class="header-auth">
+        <div id="userStatusBadge" class="role-pill role-guest" title="Current access role">
+          <span class="status-dot"></span>
+          <span id="userRoleLabel">Guest Preview</span>
+        </div>
+        <button id="openAuthBtn" class="btn btn-primary btn-sm" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          <span>Sign In</span>
+        </button>
+        <button id="signOutBtn" class="btn btn-ghost btn-sm hidden" type="button">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- Educational Disclaimer Banner -->
+    <div class="container disclaimer-wrap">
+      <div class="disclaimer-bar glass-subtle" role="note" aria-label="Educational Disclaimer">
+        <svg class="disclaimer-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <p><strong>Academic Clinical Simulation (ICT 4458):</strong> Educational software engineering &amp; SQA demonstration built at UFTB. Not a substitute for licensed medical or pharmacological advice.</p>
+      </div>
+    </div>
+
+    <!-- Hero Section with Interactive Three.js 3D Pharmaceutical Crystal Lattice -->
+    <section id="hero" class="hero-section">
+      <div class="container hero-grid">
+        <div class="hero-copy glass-panel">
+          <div class="hero-meta-row">
+            <span class="chip chip-emerald">Swiss Clinical Crystal UI</span>
+            <span class="chip chip-sapphire font-mono">ICT 4458 · SQA Verified</span>
+          </div>
+          <h1 class="hero-title">Precision drug interaction &amp; prescription safety verification.</h1>
+          <p class="hero-lead">
+            Screen multi-drug regimens against clinical interaction rules, patient allergies, organ impairment, and Cockcroft-Gault renal clearance — backed by Cloud Firestore audit logs and a live automated SQA test suite.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#safety-engine" class="btn btn-primary btn-lg">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+              <span>Run Prescription Audit</span>
+            </a>
+            <a href="#sqa-lab" class="btn btn-secondary btn-lg">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              <span>Execute SQA Suite</span>
+            </a>
+          </div>
+
+          <div class="hero-metrics" aria-label="Platform capabilities">
+            <div class="metric-tile">
+              <span class="metric-value font-mono">16</span>
+              <span class="metric-label">Clinical Formulary Drugs</span>
+            </div>
+            <div class="metric-tile">
+              <span class="metric-value font-mono">24</span>
+              <span class="metric-label">Interaction &amp; Safety Rules</span>
+            </div>
+            <div class="metric-tile">
+              <span class="metric-value font-mono">20/20</span>
+              <span class="metric-label">Automated SQA Checks</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3D Three.js Pharmaceutical Molecule Viewport -->
+        <div class="hero-visual glass-panel">
+          <div class="molecule-toolbar">
+            <div class="molecule-title-group">
+              <span class="live-indicator"></span>
+              <div>
+                <h2 class="molecule-heading">3D Pharmaceutical Crystal Lattice</h2>
+                <p class="molecule-sub font-mono">WebGL · Drag to orbit · Hover to inspect</p>
+              </div>
+            </div>
+            <div class="molecule-controls">
+              <button id="toggleStructureBtn" class="btn btn-glass btn-xs" type="button" title="Switch 3D molecular geometry">Helix Mode</button>
+              <button id="toggleMotionBtn" class="btn btn-glass btn-xs" type="button" title="Pause or resume rotation">Pause</button>
+            </div>
+          </div>
+
+          <div id="moleculeCanvasContainer" class="molecule-viewport" role="img" aria-label="Interactive 3D pharmaceutical crystal molecule and double-helix bond lattice">
+            <canvas id="moleculeCanvas"></canvas>
+            <div id="webglFallback" class="webgl-fallback hidden">
+              <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+                <circle cx="32" cy="32" r="24" stroke="#059669" stroke-width="2" stroke-dasharray="4 4"/>
+                <circle cx="32" cy="14" r="6" fill="#10B981"/>
+                <circle cx="48" cy="42" r="6" fill="#0284C7"/>
+                <circle cx="16" cy="42" r="6" fill="#059669"/>
+                <path d="M32 14L48 42L16 42Z" stroke="#0B1F1E" stroke-opacity="0.3" stroke-width="2"/>
+              </svg>
+              <p>3D Molecular Lattice Preview (Static Fallback)</p>
+            </div>
+          </div>
+
+          <div class="molecule-footer">
+            <div class="mol-spec">
+              <span class="mol-spec-label">Compound Model</span>
+              <span id="molModelName" class="mol-spec-val font-mono">CYP2C9 / Double-Helix Lattice</span>
+            </div>
+            <div class="mol-spec">
+              <span class="mol-spec-label">Bond Integrity</span>
+              <span class="mol-spec-val font-mono text-emerald">99.4% Nominal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 1: Multi-Drug Interaction & Prescription Safety Engine -->
+    <section id="safety-engine" class="section-block">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Multi-Drug Interaction &amp; Safety Engine</h2>
+            <p class="section-desc">Select medications and patient clinical flags to run real-time interaction, allergy, pregnancy, renal, hepatic, and age-based screening.</p>
+          </div>
+          <div class="preset-bar" aria-label="Clinical Case Presets">
+            <span class="preset-label">Case Presets:</span>
+            <button type="button" class="btn btn-glass btn-xs preset-btn" data-preset="geriatric-bleed">Case 1: Geriatric Anticoagulant</button>
+            <button type="button" class="btn btn-glass btn-xs preset-btn" data-preset="cardio-allergy">Case 2: Cardiology + Allergy</button>
+            <button type="button" class="btn btn-glass btn-xs preset-btn" data-preset="pregnancy-cardiac">Case 3: Pregnancy &amp; Digoxin</button>
+          </div>
+        </div>
+
+        <div class="engine-grid">
+          <!-- Left Column: Patient Profile & Formulary Picker -->
+          <div class="engine-inputs glass-panel">
+            <div class="panel-header">
+              <h3>1. Patient Clinical Profile</h3>
+              <button type="button" id="resetEngineBtn" class="btn btn-ghost btn-xs">Clear Form</button>
+            </div>
+
+            <div class="form-grid-3">
+              <div class="field">
+                <label for="patientName">Patient Name / MRN</label>
+                <input id="patientName" type="text" placeholder="e.g., MRN-4082 · Rahim Uddin" value="MRN-4082 · Rahim Uddin" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label for="patientAge">Age (Years)</label>
+                <input id="patientAge" type="number" min="0" max="150" value="48" />
+                <span id="ageGroupTag" class="field-hint font-mono">Adult (18–65y)</span>
+              </div>
+              <div class="field">
+                <label for="patientWeight">Weight (kg)</label>
+                <input id="patientWeight" type="number" min="1" max="300" step="0.5" value="72" />
+              </div>
+            </div>
+
+            <!-- Clinical Organ & Special Flags -->
+            <div class="flags-group">
+              <span class="group-label">Clinical Condition Flags</span>
+              <div class="toggle-pills">
+                <label class="toggle-pill">
+                  <input type="checkbox" id="flagRenal" />
+                  <span>Renal Impairment (CKD)</span>
+                </label>
+                <label class="toggle-pill">
+                  <input type="checkbox" id="flagHepatic" />
+                  <span>Hepatic Impairment</span>
+                </label>
+                <label class="toggle-pill">
+                  <input type="checkbox" id="flagPregnant" />
+                  <span>Pregnancy</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Patient Allergies -->
+            <div class="flags-group">
+              <span class="group-label">Documented Drug Allergies</span>
+              <div class="toggle-pills allergy-pills">
+                <label class="toggle-pill pill-crimson">
+                  <input type="checkbox" name="allergy" value="penicillin" />
+                  <span>Penicillin / Beta-Lactams</span>
+                </label>
+                <label class="toggle-pill pill-crimson">
+                  <input type="checkbox" name="allergy" value="nsaid" />
+                  <span>NSAIDs / Aspirin</span>
+                </label>
+                <label class="toggle-pill pill-crimson">
+                  <input type="checkbox" name="allergy" value="sulfa" />
+                  <span>Sulfonamides (Sulfa)</span>
+                </label>
+                <label class="toggle-pill pill-crimson">
+                  <input type="checkbox" name="allergy" value="macrolide" />
+                  <span>Macrolides</span>
+                </label>
+              </div>
+            </div>
+
+            <hr class="glass-divider" />
+
+            <!-- Medication Formulary Picker -->
+            <div class="panel-header">
+              <h3>2. Select Medications (<span id="selectedCount" class="font-mono">0</span>)</h3>
+              <div class="search-box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input id="medSearchInput" type="search" placeholder="Filter 16 medications..." aria-label="Filter medications" />
+              </div>
+            </div>
+
+            <!-- Selected Pills Tray -->
+            <div id="selectedMedTray" class="selected-tray" aria-live="polite">
+              <span class="tray-empty">No medications selected yet. Click drugs below or choose a clinical case preset.</span>
+            </div>
+
+            <!-- Medication Grid -->
+            <div id="medicationGrid" class="medication-grid" role="group" aria-label="Clinical Formulary Medications"></div>
+
+            <!-- Validation Message -->
+            <div id="engineValidationMsg" class="validation-banner hidden" role="alert"></div>
+
+            <div class="engine-action-row">
+              <button type="button" id="runSafetyCheckBtn" class="btn btn-primary btn-lg full-width">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                <span>Analyze Prescription Safety</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: Live Safety Report & Firestore Save -->
+          <div class="engine-results glass-panel" aria-live="polite">
+            <div class="panel-header">
+              <h3>Clinical Safety Report</h3>
+              <span id="reportTimestamp" class="font-mono text-muted text-xs">Awaiting analysis</span>
+            </div>
+
+            <!-- Risk Summary Banner -->
+            <div id="riskSummaryCard" class="risk-banner risk-neutral">
+              <div class="risk-banner-main">
+                <span id="riskBadge" class="severity-badge badge-neutral">READY</span>
+                <h4 id="riskHeadline">Select medications to evaluate regimen safety</h4>
+                <p id="riskSubtext">SafeRx AI screens pairwise interactions, allergy cross-reactivity, and patient-specific organ/age contraindications.</p>
+              </div>
+              <div class="risk-counts">
+                <div class="rc-item">
+                  <span id="countCritical" class="rc-num font-mono text-crimson">0</span>
+                  <span class="rc-lbl">Contraindicated</span>
+                </div>
+                <div class="rc-item">
+                  <span id="countHigh" class="rc-num font-mono text-amber">0</span>
+                  <span class="rc-lbl">Major</span>
+                </div>
+                <div class="rc-item">
+                  <span id="countModerate" class="rc-num font-mono text-sapphire">0</span>
+                  <span class="rc-lbl">Moderate</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Alerts Feed -->
+            <div id="alertsList" class="alerts-list">
+              <div class="empty-state">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <p>No active alerts. Load a clinical preset above or select 2+ medications to inspect mechanisms and safer alternatives.</p>
+              </div>
+            </div>
+
+            <!-- Save Audit to Cloud Firestore -->
+            <div class="save-audit-box">
+              <div class="field">
+                <label for="clinicianNotes">Pharmacist / Clinician Audit Notes (Optional)</label>
+                <input id="clinicianNotes" type="text" placeholder="e.g., Recommended switching Omeprazole to Pantoprazole" />
+              </div>
+              <button type="button" id="saveAuditBtn" class="btn btn-emerald full-width" disabled>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                <span id="saveAuditBtnText">Save Prescription Audit to Cloud Firestore</span>
+              </button>
+              <p id="saveAuditHint" class="save-hint">Signed-in users sync directly to Cloud Firestore (<code>saferx_prescriptions</code>). Guests save to local preview ledger.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Clinical Dosage, BMI & Creatinine Clearance Calculator -->
+    <section id="dosage-lab" class="section-block">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Clinical Dosage, BMI &amp; Creatinine Clearance Lab</h2>
+            <p class="section-desc">Real-time Cockcroft-Gault CrCl estimation, Body Mass Index classification, and renal/weight-adjusted medication dosing range verification.</p>
+          </div>
+        </div>
+
+        <div class="calc-grid">
+          <form id="dosageCalcForm" class="glass-panel calc-form" novalidate>
+            <div class="panel-header">
+              <h3>Biometric &amp; Renal Parameters</h3>
+              <span class="chip chip-sapphire font-mono">Cockcroft-Gault</span>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="field">
+                <label for="calcAge">Age (years)</label>
+                <input id="calcAge" type="number" min="1" max="120" value="54" required />
+              </div>
+              <div class="field">
+                <label for="calcSex">Biological Sex</label>
+                <select id="calcSex">
+                  <option value="male">Male (Factor 1.00)</option>
+                  <option value="female">Female (Factor 0.85)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="calcWeight">Weight (kg)</label>
+                <input id="calcWeight" type="number" min="3" max="250" step="0.5" value="74" required />
+              </div>
+              <div class="field">
+                <label for="calcHeight">Height (cm)</label>
+                <input id="calcHeight" type="number" min="50" max="240" value="172" required />
+              </div>
+              <div class="field">
+                <label for="calcScr">Serum Creatinine (mg/dL)</label>
+                <input id="calcScr" type="number" min="0.2" max="15" step="0.05" value="1.10" required />
+              </div>
+              <div class="field">
+                <label for="calcDrug">Target Medication for Dosing</label>
+                <select id="calcDrug">
+                  <option value="metformin">Metformin (Antidiabetic)</option>
+                  <option value="amoxicillin">Amoxicillin (Antibiotic)</option>
+                  <option value="ciprofloxacin">Ciprofloxacin (Fluoroquinolone)</option>
+                  <option value="paracetamol">Paracetamol / Acetaminophen</option>
+                  <option value="digoxin">Digoxin (Cardiac Glycoside)</option>
+                  <option value="lisinopril">Lisinopril (ACE Inhibitor)</option>
+                </select>
+              </div>
+            </div>
+          </form>
+
+          <!-- Live Calculated Outputs -->
+          <div class="glass-panel calc-results" aria-live="polite">
+            <div class="calc-kpi-row">
+              <div class="calc-kpi">
+                <span class="calc-kpi-label">Body Mass Index (BMI)</span>
+                <div class="calc-kpi-val-row">
+                  <span id="outBmiValue" class="calc-kpi-val font-mono">25.0</span>
+                  <span class="calc-kpi-unit font-mono">kg/m²</span>
+                </div>
+                <span id="outBmiBadge" class="severity-badge badge-emerald">Normal Weight</span>
+                <div class="meter-track" aria-hidden="true">
+                  <div id="bmiMeterFill" class="meter-fill meter-emerald" style="width: 50%"></div>
+                </div>
+              </div>
+
+              <div class="calc-kpi">
+                <span class="calc-kpi-label">Creatinine Clearance (CrCl)</span>
+                <div class="calc-kpi-val-row">
+                  <span id="outCrclValue" class="calc-kpi-val font-mono">80.5</span>
+                  <span class="calc-kpi-unit font-mono">mL/min</span>
+                </div>
+                <span id="outCrclBadge" class="severity-badge badge-emerald">Normal Renal Function</span>
+                <div class="meter-track" aria-hidden="true">
+                  <div id="crclMeterFill" class="meter-fill meter-sapphire" style="width: 72%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div id="dosageAdviceCard" class="dosage-advice">
+              <div class="dosage-advice-header">
+                <h4 id="outDrugTitle">Metformin — Renal &amp; Safe-Range Assessment</h4>
+                <span id="outDoseStatus" class="severity-badge badge-emerald">Within Safe Range</span>
+              </div>
+              <p id="outDoseRange" class="dosage-range font-mono"></p>
+              <p id="outDoseGuidance" class="dosage-guidance"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Cloud Firestore Prescription Audit Ledger (RBAC) -->
+    <section id="audit-ledger" class="section-block">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Prescription Safety Audit Ledger</h2>
+            <p class="section-desc">Real-time Cloud Firestore log (<code>saferx_prescriptions</code>) with role-based Chief Pharmacist approval, flagging, and audit governance.</p>
+          </div>
+          <div class="ledger-controls">
+            <select id="auditStatusFilter" aria-label="Filter audits by status" class="filter-select">
+              <option value="all">All Statuses</option>
+              <option value="pending">Pending Review</option>
+              <option value="approved">Approved</option>
+              <option value="flagged">Flagged</option>
+            </select>
+            <button type="button" id="refreshAuditBtn" class="btn btn-glass btn-sm">Refresh</button>
+          </div>
+        </div>
+
+        <div class="glass-panel ledger-panel">
+          <div id="rbacNoticeBar" class="rbac-notice">
+            <span id="rbacNoticeText">Viewing in Guest Preview mode. Sign in with Google or Email to sync with Cloud Firestore. Chief Pharmacist (<code>alansari10157@gmail.com</code>) unlocks Approve, Flag &amp; Delete controls.</span>
+          </div>
+
+          <div class="table-wrap">
+            <table class="audit-table">
+              <thead>
+                <tr>
+                  <th>Patient &amp; Timestamp</th>
+                  <th>Medications Screened</th>
+                  <th>Overall Risk</th>
+                  <th>Alerts</th>
+                  <th>Status</th>
+                  <th>Clinician / Notes</th>
+                  <th id="adminActionsCol">Governance</th>
+                </tr>
+              </thead>
+              <tbody id="auditTableBody">
+                <tr>
+                  <td colspan="7" class="table-empty">Loading prescription audit records...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Software Engineering Architecture & Live SQA Test Suite Dashboard -->
+    <section id="sqa-lab" class="section-block">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Software Engineering Architecture &amp; SQA Lab</h2>
+            <p class="section-desc">Interactive verification suite executing live Unit, Integration, API/Security, and Usability assertions modeled on ICT 4458 pytest architecture.</p>
+          </div>
+          <button type="button" id="runSqaSuiteBtn" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span>Run Full SQA Suite</span>
+          </button>
+        </div>
+
+        <div class="sqa-grid">
+          <!-- Architecture Overview Card -->
+          <div class="glass-panel sqa-arch">
+            <h3>Modular Architecture (ICT 4458)</h3>
+            <p class="arch-intro">Separation of concerns across typed clinical models, boundary validation, deterministic rule engine, and automated quality gates.</p>
+
+            <div class="arch-tree font-mono">
+              <div class="arch-node"><span class="node-badge badge-emerald">MODEL</span> <strong>models.py</strong> — Medication, PatientProfile, SafetyAlert, RiskLevel</div>
+              <div class="arch-node"><span class="node-badge badge-sapphire">VALID</span> <strong>validation.py</strong> — InputValidator, boundary &amp; XSS sanitization</div>
+              <div class="arch-node"><span class="node-badge badge-amber">CORE</span> <strong>safety_checker.py</strong> — Drug interactions, allergies, organ/age checks</div>
+              <div class="arch-node"><span class="node-badge badge-emerald">TEST</span> <strong>tests/test_validation.py</strong> &amp; <strong>test_safety_checker.py</strong></div>
+            </div>
+
+            <div class="sqa-score-grid">
+              <div class="sqa-stat">
+                <span class="sqa-stat-label">Pass Rate</span>
+                <span id="sqaPassRate" class="sqa-stat-val font-mono text-emerald">--%</span>
+              </div>
+              <div class="sqa-stat">
+                <span class="sqa-stat-label">Passed / Total</span>
+                <span id="sqaPassCount" class="sqa-stat-val font-mono">0 / 20</span>
+              </div>
+              <div class="sqa-stat">
+                <span class="sqa-stat-label">Execution Time</span>
+                <span id="sqaDuration" class="sqa-stat-val font-mono">0.0 ms</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Test Runner Output -->
+          <div class="glass-panel sqa-runner">
+            <div class="sqa-tabs" role="tablist" aria-label="SQA test categories">
+              <button type="button" class="sqa-tab active" data-cat="all" role="tab" aria-selected="true">All (20)</button>
+              <button type="button" class="sqa-tab" data-cat="unit" role="tab" aria-selected="false">Unit</button>
+              <button type="button" class="sqa-tab" data-cat="integration" role="tab" aria-selected="false">Integration</button>
+              <button type="button" class="sqa-tab" data-cat="security" role="tab" aria-selected="false">API &amp; Security</button>
+              <button type="button" class="sqa-tab" data-cat="usability" role="tab" aria-selected="false">Usability</button>
+            </div>
+
+            <div id="sqaResultsList" class="sqa-results-list" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer glass-subtle">
+    <div class="container footer-inner">
+      <div>
+        <strong>SafeRx AI</strong> — Intelligent Healthcare &amp; Clinical Safety Solution
+        <p class="footer-meta">Developed by Rayhanul Islam · ICT 4458 Software Engineering, Testing &amp; Quality Assurance Lab · University of Frontier Technology, Bangladesh</p>
+      </div>
+      <div class="footer-badges font-mono">
+        <span>Firebase Auth &amp; Firestore</span>
+        <span>Three.js WebGL</span>
+        <span>WCAG 2.1 AA</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Auth Modal (Google + Email/Password + Guest Preview) -->
+  <div id="authModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <div>
+          <h3 id="authModalTitle">Clinical Access Portal</h3>
+          <p class="modal-sub">Sign in to sync prescription audits to Cloud Firestore or continue as Guest.</p>
+        </div>
+        <button type="button" id="closeAuthModalBtn" class="icon-btn" aria-label="Close sign in dialog">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <button type="button" id="googleSignInBtn" class="btn btn-google full-width">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.2-2.27H12v4.51h6.47a5.54 5.54 0 0 1-2.4 3.63v3h3.88c2.27-2.09 3.54-5.17 3.54-8.87z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.94-2.91l-3.88-3c-1.07.72-2.45 1.15-4.06 1.15-3.12 0-5.77-2.11-6.72-4.96H1.28v3.1A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.28 14.28A7.2 7.2 0 0 1 4.9 12c0-.79.14-1.56.38-2.28V6.62H1.28A12 12 0 0 0 0 12c0 1.94.46 3.77 1.28 5.38l4-3.1z"/><path fill="#EA4335" d="M12 4.76c1.76 0 3.34.61 4.58 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.28 6.62l4 3.1c.95-2.85 3.6-4.96 6.72-4.96z"/></svg>
+        <span>Continue with Google</span>
+      </button>
+
+      <div class="auth-divider"><span>or use clinical email</span></div>
+
+      <div class="auth-mode-tabs">
+        <button type="button" id="tabLogin" class="auth-tab active">Sign In</button>
+        <button type="button" id="tabRegister" class="auth-tab">Create Account</button>
+      </div>
+
+      <form id="emailAuthForm" class="auth-form">
+        <div class="field">
+          <label for="authEmail">Email Address</label>
+          <input id="authEmail" type="email" required placeholder="clinician@hospital.org" autocomplete="email" />
+        </div>
+        <div class="field">
+          <label for="authPassword">Password</label>
+          <input id="authPassword" type="password" required minlength="6" placeholder="Minimum 6 characters" autocomplete="current-password" />
+        </div>
+        <div id="authErrorMsg" class="validation-banner hidden" role="alert"></div>
+        <button type="submit" id="emailAuthSubmitBtn" class="btn btn-primary full-width">Sign In with Email</button>
+      </form>
+
+      <button type="button" id="guestPreviewBtn" class="btn btn-ghost full-width">Continue with Guest Clinical Preview</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <!-- Three.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" defer></script>
+  <!-- Main Application (ES Module with Firebase v10 SDK) -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
